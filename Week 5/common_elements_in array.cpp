@@ -27,19 +27,6 @@ int main()
   arr2 = takeInputArray(arr2, size2);
 
   sort(arr1, arr1+size1);
-  sort(arr2, arr2+size2);
-
-  // printArray(arr1, size1);
-  // printArray(arr2, size2);
-
-  findDuplicates(arr1, size1, arr2, size2);
-  delete [] arr1;
-  delete [] arr2;
-  return 0;
-}
-
-void findDuplicates(int* arr1, int size1, int* arr2, int size2)
-{
   int i = 0, j = 0;
   cout<<endl;
   while(i < size1 && j < size2)
