@@ -23,11 +23,8 @@ int main()
   arr = takeInputArray(arr, size);
 
   Range r = findRange(arr, size);
-
   countingSort(arr, size, r);
-
   printArray(arr, size);
-
   free(arr);
 }
 
