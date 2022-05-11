@@ -49,14 +49,13 @@ void heapify(int* arr, int p, int s, int c)
   int l = (2*p)+1;
   int r = (2*p)+2;
 
-
   if(c)  // Ascending Order -- max heap is created
   {
     int largest = p;
-    if(l < s && arr[l] >= arr[largest])
+    if(l < s && arr[l] > arr[largest])
     largest = l;
 
-    if(r < s && arr[r] >= arr[largest])
+    if(r < s && arr[r] > arr[largest])
     largest = r;
 
     if(largest != p)
@@ -69,10 +68,10 @@ void heapify(int* arr, int p, int s, int c)
   {
     int smallest = p;
 
-    if(l < s && arr[l] <= arr[smallest])
+    if(l < s && arr[l] < arr[smallest])
     smallest = l;
 
-    if(r < s && arr[r] <= arr[smallest])
+    if(r < s && arr[r] < arr[smallest])
     smallest = r;
 
     if(smallest != p)
@@ -92,7 +91,7 @@ void swap(int* arr, int i, int j)
 
 void heapSort(int* arr, int s, int c)
 {
-  for(int i = s-1; i >= 0; i--)
+  for(int i = s-1; i >0 ; i--)
   {
     swap(arr, 0, i);
     heapify(arr, 0, i, c);
