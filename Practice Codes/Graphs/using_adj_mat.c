@@ -72,7 +72,6 @@ int main()
         }
         else
           printf("\nNode Doesn't exist.\n");
-          // ALSO NEED TO UPDATE THE ASJ MAT LATER
       }
             break;
       case 3:
@@ -210,8 +209,15 @@ char* addNodes(char* nodes, int** mat, char a, char b, int* size)
 
 void deleteEdge(int* mat, int i, int j, int size)
 {
+  if(mat != NULL)
+  {
     mat[(i*size)+j] = 0;
     mat[(j*size)+i] = 0;
+  }
+  else
+  {
+    printf("\nMatrix doesn't Exist!\n");
+  }
 }
 
 int* createMat(int* mat, int size, int ext)
@@ -250,49 +256,70 @@ int* createMat(int* mat, int size, int ext)
 
 int* updateMat(int* mat, int ind, int size)
 {
-  int s = size-1;
-  int* newMat = (int*) malloc(sizeof(int)*s*s);
-
-  for(int i = 0; i < size; i++)
+  if(mat != NULL)
   {
-    for(int j = 0; j < size; j++)
-    {
-      int ms = i*(size)+j;
+    int s = size-1;
+    int* newMat = (int*) malloc(sizeof(int)*s*s);
 
-      if(i != ind || j != ind)
+    for(int i = 0; i < size; i++)
+    {
+      for(int j = 0; j < size; j++)
       {
-        int ns = (i*s)+j;
-        newMat[ms] = mat[ns];
-      }
-      else
-      {
-        newMat[ms] = 0;
+        int ms = i*(size)+j;
+
+        if(i != ind || j != ind)
+        {
+          int ns = (i*s)+j;
+          newMat[ms] = mat[ns];
+        }
+        else
+        {
+          newMat[ms] = 0;
+        }
       }
     }
+    free(mat);
+    return newMat;
   }
-  free(mat);
-  return newMat;
+  else
+  {
+    printf("\nMatrix doesn't Exist!\n");
+  }
+  return mat;
 }
 
 
 void searchEdge(int* mat, int a, int b, int size)
 {
-  if(mat[(a*size)+b] == 1 && mat[(b*size)+a] == 1)
+  if(mat != NULL)
+  {
+    if(mat[(a*size)+b] == 1 && mat[(b*size)+a] == 1)
     printf("The Edge Exists");
-  else
+    else
     printf("The Edge doesn't Exist");
+  }
+  else
+  {
+    printf("\nMatrix doesn't Exist\n");
+  }
 }
 
 
 char* deleteNode(char* nodes, int index, int* size)
 {
-  for(int i = index; i < *size-1; i++)
+  if(nodes != NULL)
   {
-    nodes[i] = nodes[i+1];
+    for(int i = index; i < *size-1; i++)
+    {
+      nodes[i] = nodes[i+1];
+    }
+    nodes = (char*)realloc(nodes, *size-1);
+    (*size)--;
   }
-  nodes = (char*)realloc(nodes, *size-1);
-  (*size)--;
-
+  else
+  {
+    printf("\nCreate Nodes First!\n");
+  }
   return nodes;
 }
 
