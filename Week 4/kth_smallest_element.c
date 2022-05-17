@@ -27,8 +27,7 @@ int main()
 
     int k;
     scanf("%d", &k);
-
-
+  }
 }
 
 int* takeInputArray(int* arr, int size)

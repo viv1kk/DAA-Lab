@@ -27,7 +27,8 @@ int main()
   printf("5. Search an Edge\n");
   printf("6. Print All Nodes\n");
   printf("7. Print All Edges\n");
-  printf("8. Print the Adjecency Matrix\n\n");
+  printf("8. Print the Adjecency Matrix\n");
+  printf("9. Exit\n\n");
 
 
   int ch;
@@ -136,6 +137,10 @@ int main()
       {
         printAdjMat(adjMat, sizeN);
       }
+              break;
+
+      case 9:
+      return 0;
               break;
       default:
           printf("Invalid Input!");
