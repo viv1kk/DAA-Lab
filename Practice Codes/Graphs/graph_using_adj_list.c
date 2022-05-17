@@ -22,7 +22,7 @@ void addToList(List**, char*, int, char, char); // adj List
 
 int main()
 {
-  printf("Undiercted Graph Adjecency List:\n\n");
+  printf("Undiercted Graph Adjacency List:\n\n");
   printf("1. Add an Edge\n"); // done
   printf("2. Delete a Node\n");
   printf("3. Delete an Edge\n");
