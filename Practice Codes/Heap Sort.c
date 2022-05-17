@@ -12,7 +12,7 @@ void swap(int*, int, int);
 
 int main()
 {
-  int arr[] = {1,3,90,5,4,6,13,10,9,8,15,17,};
+  int arr[] = {170, 165, 180, 180, 164, 169, 172, 170, 174};
   int s = sizeof(arr)/sizeof(arr[0]);
 
   // int *arr = (int*) malloc(s*sizeof(int));
