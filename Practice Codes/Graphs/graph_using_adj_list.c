@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 typedef struct LL
 {
   char data;
@@ -13,25 +12,26 @@ void printAllNodes(char*, int);
 void printAllAdjList(List**, char*, int);
 void printAdjListOfNode(List**, int);
 void removeEdge(List***, int, char);
+void removeNode(List***, char**, int*, int*, char);
+void modifyList(List**, int,  List*, char);
 void printAllEdges(List**, char*, int);
 List* searchEdgeAdjList(List**,int ,char);
 void addEdges(List***, char*, int,int*, char, char);
 int searchNode(char*, int, char);
 void addToList(List**, char*, int, char, char); // adj List
 
-
 int main()
 {
   printf("Undiercted Graph Adjacency List:\n\n");
   printf("1. Add an Edge\n"); // done
   printf("2. Delete a Node\n");
-  printf("3. Delete an Edge\n");
+  printf("3. Delete an Edge\n"); //done
   printf("4. Search a Node\n"); // done
-  printf("5. Search an Edge\n");
+  printf("5. Search an Edge\n"); // done
   printf("6. Print All Nodes\n");// done
-  printf("7. Print All Edges\n");
-  printf("8. Print Adjecency List of a Node\n");
-  printf("9. Print All the Adjecency Lists\n"); //done
+  printf("7. Print All Edges\n"); //done
+  printf("8. Print Adjacency List of a Node\n"); // done
+  printf("9. Print All the Adjacency Lists\n"); //done
   printf("10. Exit\n");
 
   List** nodePtrArr = NULL;
@@ -63,13 +63,22 @@ int main()
       }
               break;
       case 2:
+      {
+        // delete a node -- delete node + correct adjecency list
+        char x;
+        printf("\nInput the node you want to delete : ");
+        fflush(stdin);
+        scanf("%c", &x);
+
+        removeNode(&nodePtrArr, &nodes, &sizeN, &sizeE, x);
+      }
               break;
       case 3:
       {
         // delete An edge
 
         char x, y;
-        printf("Enter the 2 nodes : ");
+        printf("\nEnter the 2 nodes : ");
         fflush(stdin);
         scanf("%c%c", &x, &y);
 
@@ -77,7 +86,7 @@ int main()
         int indY = searchNode(nodes, sizeN, y);
 
         if(indX == -1 || indY == -1)
-          printf("Node not found!");
+          printf("Node not found!\n");
         else
         {
           removeEdge(&nodePtrArr, indX, y); // because undirected graph so remove edge from both nodes
@@ -133,7 +142,7 @@ int main()
               break;
       case 8:
       {
-        printf("Print Adjecency List of a Node ");
+        printf("Print Adjacency List of a Node ");
         char x;
         printf("\nInput the Node of the List : ");
         fflush(stdin);
@@ -163,9 +172,7 @@ int main()
               break;
     }
   }
-
   free(nodes);
-
   return 0;
 }
 
@@ -274,49 +281,34 @@ void addToList(List** nPtrArr, char* nodes, int size, char a, char b)
     return;
   }
 
-// for list A
-  List* l1 = nPtrArr[indA];
-  if(l1 == NULL)
-  {
-    nPtrArr[indA] = tempA;
-  }
-  else if(searchEdgeAdjList(nPtrArr, indA, b) == NULL)
-  {
-    List* t = l1;
-    while(l1 != NULL)
-    {
-      t = l1;
-      l1 = l1->next;
-    }
-    t->next = tempA;
-  }
-  else
-  {
-    free(tempA);
-  }
-
-// for list B
-  List* l2 = nPtrArr[indB];
-  if(l2 == NULL)
-  {
-    nPtrArr[indB] = tempB;
-  }
-  else if(searchEdgeAdjList(nPtrArr, indB, a) == NULL)
-  {
-    List* t = l2;
-    while(l2 != NULL)
-    {
-      t = l2;
-      l2 = l2->next;
-    }
-    t->next = tempB;
-  }
-  else
-  {
-    free(tempB);
-  }
+  // for list A
+  modifyList(nPtrArr, indA, tempA, a);
+  // for list B
+  modifyList(nPtrArr, indB, tempB, b);
 }
 
+void modifyList(List** nPtrArr, int ind,  List* temp, char x)
+{
+    List* l = nPtrArr[ind];
+    if(l == NULL)
+    {
+      nPtrArr[ind] = temp;
+    }
+    else if(searchEdgeAdjList(nPtrArr, ind, x) == NULL)
+    {
+      List* t = l;
+      while(l != NULL)
+      {
+        t = l;
+        l = l->next;
+      }
+      t->next = temp;
+    }
+    else
+    {
+      free(temp);
+    }
+}
 
 List* searchEdgeAdjList(List** nodePtrArr, int ind, char t)
 {
@@ -347,16 +339,66 @@ int searchNode(char* nodes, int size, char tar)
   return -1;
 }
 
+void removeNode(List*** nodePtrArr, char** nodes, int* sizeN, int* sizeE, char x)
+{
+  for(int i = 0; i < *sizeE; i++)
+  {
+    removeEdge(nodePtrArr, i, x);
+  }
+  int indX = searchNode(*nodes, *sizeN, x);
+
+  if(indX == -1)
+  {
+    printf("Node not Found!\n");
+  }
+  else
+  {
+    // remove node from AdjList
+    List** temp = (List**) malloc(((*sizeE)-1)*sizeof(List**));
+    for(int i = 0, j = 0; i < *sizeN;)
+    {
+      if(i == indX)
+      {
+        i++;
+        continue;
+      }
+      temp[j++] = (*nodePtrArr)[i++];
+    }
+
+    List **t = *nodePtrArr;
+    *nodePtrArr = temp;
+    temp = t;
+
+    free(temp);
+    (*sizeE)--;
+
+    // remove node from Node List
+    char* tempN  = (char*) malloc(((*sizeN)-1)*sizeof(char*));
+    for(int i = 0, j = 0; i < *sizeN;)
+    {
+      if(i == indX)
+      {
+        i++;
+        continue;
+      }
+      tempN[j++] = (*nodes)[i++];
+    }
+
+    char *tn = *nodes;
+    *nodes = tempN;
+    tempN = tn;
+
+    free(tempN);
+    (*sizeN)--;
+  }
+}
+
 void removeEdge(List*** nodePtrArr, int ind, char tar)
 {
   List* start = (*nodePtrArr)[ind];
   List* del = searchEdgeAdjList(*nodePtrArr, ind, tar);
 
-  if(del == NULL)
-  {
-    printf("Edge doesn't exist!\n");
-  }
-  else
+  if(del != NULL)
   {
     if(start == del)
     {
@@ -374,7 +416,6 @@ void removeEdge(List*** nodePtrArr, int ind, char tar)
       free(del);
     }
   }
-
 }
 
 void printAllNodes(char* nodes, int size)
@@ -416,7 +457,7 @@ void printAllEdges(List** nodesPtrArr, char* nodes, int size)
 void printAllAdjList(List** adjPtr, char* nodes, int size)
 {
   int i = 0;
-  printf("\nAdjecency List of all the nodes : \n\n");
+  printf("\nAdjacency List of all the nodes : \n\n");
   while(i < size)
   {
     printf("%c : ", nodes[i]);
