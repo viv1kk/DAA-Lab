@@ -62,7 +62,7 @@ vector<pair<int, int>> dijkstra(vector<vector<int>> adj, int src, int dest)
     ans.push_back(make_pair(dist[id].first, ((dist[id]).second).second));
     id = (dist[id].second).first;
   }while(is != id);
-  
+
   return ans;
 }
 
@@ -90,7 +90,7 @@ int main()
     cout<<i+1<<" : ";
     for(auto it = ans.begin(); it != ans.end(); it++)
     {
-      cout<<(*it).second+1<<":"<<(*it).first<<", ";
+      cout<<(*it).second+1<<", ";
     }
     cout<<" --> "<<ans[searchInd(ans, i)].first;
     cout<<endl;
