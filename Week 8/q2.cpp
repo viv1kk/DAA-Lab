@@ -11,63 +11,40 @@ struct node {
     }
 };
 
-void bellman_ford(vector<node> edges,int n,int src)
-{
-    vector<int> dist(n,10000000);
-    vector<int> parent(n,0);
-    dist[src]=0;
-    parent[src]=src;
-    for (int i=0;i<n-1;i++)
-    {
-        for (auto it:edges)
-        {
-            if (dist[it.u]+it.wt<dist[it.v])
-            {
-               dist[it.v]=dist[it.u]+it.wt;
-               parent[it.v]=it.u;
-            }   
-        }
-    }
-
-    int flag=0;
-    for (auto it:edges)
-    {
-        if (dist[it.u]+it.wt<dist[it.v])
-        {
-            cout<<"Negative Cycles"<<endl;
-            flag=1;
-            break;
-        }
-    }
-    if (flag==0)
-    {
-        cout<<"shortest paths"<<endl;
-        for (int i=0;i<n;i++)
-        {
-           cout<<i<<",";
-           int j=i;
-           while (parent[j]!=0)
-           {
-               j=parent[j];
-               cout<<j<<",";
-           }
-           if (i!=0) cout<<0<<",";
-           cout<<":"<<dist[i]<<endl;
-        }
-    }
+bool comp(node a, node b) {
+    return a.wt < b.wt; 
 }
 
-int main()
-{
-    int N,m;
+int findPar(int u, vector<int> &parent) {
+    if(u== parent[u]) 
+	   return u; 
+    return parent[u] = findPar(parent[u], parent); 
+}
+
+void unionn(int u, int v, vector<int> &parent, vector<int> &rank) {
+    u = findPar(u, parent);
+    v = findPar(v, parent);
+    if(rank[u] < rank[v]) {
+    	parent[u] = v;
+    }
+    else if(rank[v] < rank[u]) {
+    	parent[v] = u; 
+    }
+    else {
+    	parent[v] = u;
+    	rank[u]++; 
+    }
+}
+int main(){
+	int N,m;
 	cin>>N>>m;
-	vector<pair<int,int>> adj[N];
+	vector<pair<int,int>> adj[N];   //undirected graph
 	cout<<"enter the edge and its weight"<<endl;
 	for (int i=0;i<m;i++)
 	{
 		int a,b,wt;
 		cin>>a>>b>>wt;
-		adj[a].push_back({b,wt});
+		adj[a].push_back({b,wt});    //pushing only one edge because we only need one edge to sort rather it became duplicates while sorting later
 	}
 	vector<node> edges; 
 	
@@ -79,8 +56,25 @@ int main()
 			edges.push_back(node(i,it.first,it.second));
 		}
 	}
-    int src;
-    cout<<"Enter Source Node:";
-    cin>>src;
-    bellman_ford(edges,N,src);
+	sort(edges.begin(), edges.end(), comp); 
+	
+	vector<int> parent(N);
+	for(int i = 0;i<N;i++) 
+	    parent[i] = i; 
+	vector<int> rank(N, 0); 
+	
+	int cost = 0;
+	vector<pair<int,int>> mst; 
+
+	for(auto it : edges) {
+	    if(findPar(it.v, parent) != findPar(it.u, parent))
+        {
+	        cost += it.wt; 
+	        mst.push_back({it.u, it.v}); 
+	        unionn(it.u, it.v, parent, rank); 
+	    }
+	}
+
+	cout << cost << endl;
+	for(auto it : mst) cout << it.first << " - " << it.second << endl;
 }
